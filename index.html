@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html style="overflow:hidden">
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no,maximum-scale=1">
+  <title>Markers in AR.js test</title>
+  <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
+  <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+  <!-- <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script> -->
+  <!-- <script src="https://hammerjs.github.io/dist/hammer.js"></script> -->
+
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css"> -->
+  <!-- <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script> -->
+  <script src="https://unpkg.com/aframe-look-at-component@0.8.x/dist/aframe-look-at-component.min.js"></script>
+</head>
+
+<body style='margin : 0px; overflow: hidden;'>
+
+  <a-scene embedded arjs='trackingMethod: best; debugUIEnabled: false;' vr-mode-ui="enabled: false" 3d-model-control>
+    
+    <a-assets>
+      <!-- <a-asset-item id="3d-obj" src="resources/models/ghost/scene.gltf"></a-asset-item> -->
+    </a-assets>
+
+
+    <a-marker type='pattern' url='resources/pattern-marker.patt'>
+
+      <a-entity position="0.2 0 1.5">
+          <a-circle rotation="-90 0 0" color="red" radius="0.1" opacity="0.6"></a-circle>
+        
+      </a-entity>
+
+      <a-entity position="-0.1 0 2.2">
+        <a-circle rotation="-90 0 0" color="red" radius="0.1" opacity="0.6"></a-circle>
+      
+    </a-entity>
+
+    <a-entity position="-0.25 0 2.8">
+      <a-circle rotation="-90 0 0" color="red" radius="0.1" opacity="0.6"></a-circle>
+    
+  </a-entity>
+
+
+    </a-marker>
+    <a-entity camera></a-entity>
+
+  </a-scene>
+
+  
+
+</body>
+</html>
+
