@@ -1,59 +1,256 @@
 <!DOCTYPE html>
 <html style="overflow:hidden">
 
+
+<!-- 
+  
+    ****** AR 3D Chords ******
+
+    Alfonso Gustavo Chico Fernandez de Teran
+
+    Prototipo de aplicación web para aprender los 
+    acordes básicos de la guitarra en realidad aumentada.
+
+    Parte de mi TFG del grado multimedia
+
+
+-->
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no,maximum-scale=1">
-  <title>Markers in AR.js test</title>
+  <title>AR 3D Chords</title>
+  
+  <!-- Using Aframe for displaying the red circles -->
   <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
-  <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
-  <!-- <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script> -->
-  <!-- <script src="https://hammerjs.github.io/dist/hammer.js"></script> -->
 
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css"> -->
-  <!-- <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script> -->
-  <!-- <script src="https://unpkg.com/aframe-look-at-component@0.8.x/dist/aframe-look-at-component.min.js"></script> -->
+  <!-- and AR.js to handle the augmented reality part -->
+  <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
 </head>
 
 <body style='margin : 0px; overflow: hidden;'>
 
-  <a-scene embedded arjs='trackingMethod: best; debugUIEnabled: false;' vr-mode-ui="enabled: false">
+    <script>
+
+      //  in aframe we need to embed the code into a component
+        AFRAME.registerComponent('ar-3d-chord-control', {
+          init: function () {
+            
+            // to store current chord number: 0-C, 1-D, 2-E, 3-G & 4-A
+            var currentChord = 0;
+            
+            // add event-handlers for the control buttons 
+            document.getElementById("button-left").addEventListener("click",previousChord,false); 
+            document.getElementById("button-right").addEventListener("click",nextChord,false); 
+
+            // the control buttons increment or decrement the chord number, then we display the current chord
+            function nextChord() { 
+              currentChord++;
+              if (currentChord > 4) {
+                currentChord = 0;
+              }
+              updateDisplay(currentChord);
+            } 
+
+            function previousChord() { 
+              currentChord--;
+              if (currentChord < 0) {
+                currentChord = 4;
+              }
+              updateDisplay(currentChord);
+            }
+
+
+            function updateDisplay(chordNumber) {
+              // first we get the UI elements to update when the chord changes
+              var chordName = document.getElementById("UI-name-text"); 
+              var diagram = document.getElementById("diagramImage");
+              
+              // we could access to chord data through an array of objects if we have much more chords
+              // for now a swicht will do it
+              switch (chordNumber) {
+                // in each case
+                case 0:
+                  // we update the UI
+                  chordName.textContent="C - DO";
+                  diagram.src = "resources/DOM.png";
+                  // and the fretboard
+                  // fret numbers from sixth to first string
+                  var chord = [0,3,2,0,1,0];
+                  updateFretboard(chord);
+                  break;
+                case 1:
+                  chordName.textContent="D - RE";
+                  diagram.src = "resources/REM.png";
+                  var chord = [0,0,0,2,3,2];
+                  updateFretboard(chord);
+                  break;
+                case 2:
+                  chordName.textContent="E - MI";
+                  diagram.src = "resources/MIM.png";
+                  var chord = [0,2,2,1,0,0];
+                  updateFretboard(chord);
+                  break;
+                 case 3:
+                  chordName.textContent="G - SOL";
+                  diagram.src = "resources/SOLM.png";
+                  var chord = [3,2,0,0,0,3];
+                  updateFretboard(chord);
+                  break;
+                case 4:
+                  chordName.textContent="A - LA";
+                  diagram.src = "resources/LAM.png";
+                  var chord = [0,0,2,2,2,0];
+                  updateFretboard(chord);
+                  break;
+              
+                default:
+                  break;
+              }
+              function updateFretboard(chord){
+                // position of the frets in  aframe z axis
+                var frets = [1000,1.42,2.04,2.6];
+                // we loop through the six strings (circles)
+                var Ids = ["sixth", "fifth", "fourth","third" ,"second" ,"first"];
+                var strings = [];
+                for (i = 0; i < 6; i++) {
+                  // we get the circle
+                  strings[i] = document.getElementById(Ids[i]);
+                  // its current position
+                  const curr = strings[i].getAttribute('position');
+                  // and we set new position
+                  strings[i].setAttribute('position', {
+                    'x': curr.x,
+                    'y': curr.y,
+                    'z': frets[chord[i]]
+                    });
+                }
+              }
+            }
     
-    <a-assets>
-      <!-- <a-asset-item id="3d-obj" src="resources/models/ghost/scene.gltf"></a-asset-item> -->
-    </a-assets>
+            
+          }
+        });
+      </script>
 
-
+  <!-- we declare tyhe aframe scene, including the registered component with our code  -->
+<a-scene embedded arjs='trackingMethod: best; debugUIEnabled: false;' vr-mode-ui="enabled: false" ar-3d-chord-control>
+  
+  <!-- and we include a custom marker -->
     <a-marker type="pattern" preset="custom" url="resources/pattern-marker.patt">
-
-      <a-entity position="0 0 0">
-        <a-circle rotation="-90 0 0" color="red" radius="0.1" opacity="0.6"></a-circle>
       
-    </a-entity>
-
-      <a-entity position="0.2 0 1.5">
-          <a-circle rotation="-90 0 0" color="red" radius="0.1" opacity="0.6"></a-circle>
-        
+      <!-- the marker reference the six string circles -->
+      <a-entity id="first" position="0.34 0 1000">
+        <a-circle rotation="-90 0 0" color="red" radius="0.077" opacity="0.6"></a-circle>
       </a-entity>
 
-      <a-entity position="-0.1 0 2.2">
-        <a-circle rotation="-90 0 0" color="red" radius="0.1" opacity="0.6"></a-circle>
-      
-    </a-entity>
+      <a-entity id="second" position="0.17 0 1.42">
+        <a-circle rotation="-90 0 0" color="red" radius="0.077" opacity="0.6"></a-circle>
+      </a-entity>
+  
+      <a-entity id="third" position="0.01 0 1000">
+        <a-circle rotation="-90 0 0" color="red" radius="0.077" opacity="0.6"></a-circle>
+      </a-entity>
+  
+      <a-entity id="fourth" position="-0.15 0 2.04">
+        <a-circle rotation="-90 0 0" color="red" radius="0.077" opacity="0.6"></a-circle>
+      </a-entity>
+  
+      <a-entity id="fifth" position="-0.31 0 2.6">
+        <a-circle rotation="-90 0 0" color="red" radius="0.077" opacity="0.6"></a-circle>
+      </a-entity>
 
-    <a-entity position="-0.25 0 2.8">
-      <a-circle rotation="-90 0 0" color="red" radius="0.1" opacity="0.6"></a-circle>
-    
-  </a-entity>
-
-
+      <a-entity id="sixth" position="-0.47 0 1000">
+        <a-circle rotation="-90 0 0" color="red" radius="0.077" opacity="0.6"></a-circle>
+      </a-entity>
+  
+  
     </a-marker>
+    
     <a-entity camera></a-entity>
-
+  
   </a-scene>
 
+   <!-- UI markup -->
+   <div id="UI-container">
+      <div id="UI-title">
+          <div id="UI-title-warp">
+              <img src="resources/logotipo.png" alt="AR-3D-Chords logo"><span>AR 3D chords</span>
+          </div>
+      </div>
+      <div id="UI-controls">
+          <div id="UI-controls-warp">
+              <button class="button" id="button-left">&#8249</button>            
+              <div id="UI-chord-name"><p id="UI-name-text">C - DO</p></div>
+              <button class="button" id="button-right">&#8250</button>  
+          </div>
+      </div>
+      <div id="UI-diagram">
+        <img src="resources/DOM.png" alt="Chord diagram" id="diagramImage">
+      </div>
+      <button class="myButton" data-custom-open="modal-1" role="button">
+        Ayuda
+      </button>
+  </div>
   
+  <!-- modal markup (help window) library micro modal-->
+  <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+          <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+              <header class="modal__header">
+                <h2 class="modal__title" id="modal-1-title">
+                  Instrucciones de uso
+                </h2>
+                <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+              </header>
+              <main class="modal__content" id="modal-1-content">
+                  <ol>
+                      <li><strong>Imprimir</strong> <a
+                              href="https://alfonsogchico.github.io/AR-3D-chords/resources/marca-recortable-AGC.pdf">la hoja con la
+                              marca</a>, recortar por la linea, plegar por la mitad y fijar con celo las dos mitades.</li>
+                      <li><strong>Colocar</strong> la marca sobre la cejuela, en la parte final del mástil. Centrar y hacer coincidir la
+                          parte inferior con el final del mástil:<br /><img src="resources/marca-guitarra.png"
+                              title="Marca colocada en la guitarra" width="150" height="200" class="center"/></li>
+                      <li><strong>Coger la guitarra</strong> con el mástil hacia la izquierda y situarse frente a la webcam. Procurar que
+                          la marca aparezca en pantalla.</li>
+                      <li><strong>Seleccionar</strong> con las flechas o los cursores <strong>el acorde a aprender</strong> y pisar las
+                          cuerdas en el lugar indicado por las marcas rojas. </li>
+                  </ol>
+                  
+                  <p>Nota: El diagrama muestra qué dedo pisa en cada lugar. La numeración de los dedos de la mano izquierda es la
+                      siguiente: </p>
+                  
+                  <figure><img src="resources/digitacion.png" title="Digitación de la mano izquierda" width="150" height="200" class="center"/></figure>
+              </main>
+              <footer class="modal__footer">
+                <button class="modal__btn modal__btn-primary" data-micromodal-close>Continuar</button>
+              </footer>
+            </div>
+          </div>
+  </div>
+  
+  <!-- Micromodal javascript code. library: https://github.com/ghosh/Micromodal  example: https://www.cssscript.com/animated-accessible-modal-pure-javascript-micromodal/ -->
+  <script src="https://cdn.jsdelivr.net/npm/micromodal/dist/micromodal.min.js"></script>
+  <script>
+      MicroModal.init({
+          onShow: modal => console.info(`${modal.id} is shown`), // [1]
+          onClose: modal => console.info(`${modal.id} is hidden`), // [2]
+          openTrigger: 'data-custom-open', // [3]
+          closeTrigger: 'data-custom-close', // [4]
+          disableScroll: true, // [5]
+          disableFocus: false, // [6]
+          awaitCloseAnimation: false, // [7]
+          debugMode: true // [8]
+      });
+
+      var button = document.querySelector('.myButton');
+      button.addEventListener('click', function () {
+          MicroModal.show('modal-1');
+      });
+  </script>
 
 </body>
 </html>
