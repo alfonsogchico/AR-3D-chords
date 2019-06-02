@@ -12,4 +12,6 @@ Actualmente sólo incluye los acordes mayores del sistema CAGED.
 3. **Coger la guitarra** con el mástil hacia la izquierda y situarse frente a la webcam. Procurar que la marca aparezca en pantalla.
 4. **Seleccionar** con las flechas o los cursores **el acorde a aprender** y pisar las cuerdas en el lugar indicado por las marcas rojas. 
 
-Nota: El diagrama muestra qué dedo pisa en cada lugar. La numeración de los dedos de la mano izquierda es la siguiente: ![](resources/digitacion.png "Digitación de la mano izquierda")
+Nota: El diagrama muestra qué dedo pisa en cada lugar. La numeración de los dedos de la mano izquierda es la siguiente: 
+
+![](resources/digitacion.png "Digitación de la mano izquierda")
